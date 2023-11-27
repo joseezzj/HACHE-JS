@@ -1,41 +1,34 @@
-
-document.getElementById('formulario').addEventListener('submit', function(event) {
-    event.preventDefault();
-
-   
-    const nombre = document.getElementById('nombre').value;
-    const edad = document.getElementById('edad').value;
-    const ciudad = document.getElementById('ciudad').value;
-
-    
-    const datos = {
-        nombre: nombre,
-        edad: edad,
-        ciudad: ciudad
-    };
-
- 
-    const datosJSON = JSON.stringify(datos);
-
-    
-    localStorage.setItem('datosGuardados', datosJSON);
-
-    alert('Datos guardados en el almacenamiento local.');
+// Manejo de eventos al hacer clic en el botón "Cargar Datos"
+document.getElementById('cargar').addEventListener('click', function() {
+    // Hacer una solicitud a JSONPlaceholder (una API de prueba)
+    fetch('https://jsonplaceholder.typicode.com/todos/1')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Error de red: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Manipular los datos obtenidos y mostrarlos en el DOM
+            const datosDiv = document.getElementById('datos');
+            datosDiv.innerHTML = `Usuario ID: ${data.userId}, Título: ${data.title}, Completado: ${data.completed}`;
+        })
+        .catch(error => {
+            console.error('Error al cargar datos desde la API:', error);
+        });
 });
 
+// Manejo de eventos al hacer clic en el botón "Guardar Datos"
+document.getElementById('guardar').addEventListener('click', function() {
+    // Datos de ejemplo para guardar en el LocalStorage
+    const datosEjemplo = {
+        userId: 1,
+        title: 'Tarea de ejemplo',
+        completed: false
+    };
 
-document.getElementById('cargar').addEventListener('click', function() {
-    
-    const datosJSON = localStorage.getItem('datosGuardados');
+    // Convertir el objeto a cadena JSON y almacenar en el LocalStorage
+    localStorage.setItem('datosGuardados', JSON.stringify(datosEjemplo));
 
-    if (datosJSON) {
-        
-        const datos = JSON.parse(datosJSON);
-
-       
-        const datosDiv = document.getElementById('datos');
-        datosDiv.innerHTML = `Nombre: ${datos.nombre}, Edad: ${datos.edad}, Ciudad: ${datos.ciudad}`;
-    } else {
-        alert('No se encontraron datos guardados.');
-    }
+    alert('Datos guardados correctamente.');
 });
